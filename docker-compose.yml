@@ -1,0 +1,54 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: . # Use the current directory as the build context
+      dockerfile: Dockerfile # Specify the name of your Dockerfile
+    image: ksp-cluster # Name the image that will be built
+    container_name: ksp_cluster # A friendly name for the running container
+
+    # Volumes:
+    # Mount your current project directory into the container at /app
+    # This is useful for development, as code changes are reflected without rebuilding.
+    # For production, you might remove this and rely solely on the code copied by the Dockerfile.
+    volumes:
+      - .:/app
+
+    # GPU Configuration (NVIDIA):
+    # This section is for enabling GPU access within the container.
+    # Requires NVIDIA drivers and nvidia-container-toolkit on the host machine.
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all # Or specify a number, e.g., 1, if you want to limit GPU access
+    #           capabilities: [gpu] # Request GPU capabilities
+
+    # Port Mapping (Uncomment if your inference.py runs a web server):
+    # If your 'inference.py' script starts a web server (e.g., Flask, FastAPI)
+    # that listens on a port (e.g., port 8000 as per EXPOSE in Dockerfile),
+    # you'll need to map it to a host port.
+    # ports:
+    #   - "8000:8000" # Maps host port 8000 to container port 8000
+
+    # Command:
+    # The Dockerfile already specifies CMD ["python3", "inference.py"].
+    # If you wanted to override it, you could use the 'command' directive here.
+    # For example, to get an interactive shell:
+    # command: ["bash"]
+
+    # Restart Policy:
+    # 'no' (default): Container will not be restarted automatically if it stops.
+    # 'on-failure': Restart the container if it exits due to an error (non-zero exit code).
+    # 'always': Always restart the container if it stops, regardless of exit code.
+    # 'unless-stopped': Always restart unless it was explicitly stopped.
+    # Choose based on whether inference.py is a one-off script or a long-running service.
+    restart: "no" # Change as needed, e.g., 'on-failure' if it's a script you want to retry
+
+
+    # Environment variables can be set here if needed, though Python-specific ones
+    # are already in your Dockerfile.
+    # environment:
+    #   - MY_VARIABLE=my_value

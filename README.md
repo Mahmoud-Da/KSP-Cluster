@@ -4,6 +4,7 @@ K-means Student Points Cluster
 
 file structure:
 
+```
 project_root/
 ├── main.py # Main script to run the analysis
 ├── config.py # Configuration variables
@@ -14,3 +15,4 @@ project_root/
 ├── data/ # Your data directory
 │ └── dummy_exam_scores.csv
 └── output_data/ # Directory for generated outputs
+```
